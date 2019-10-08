@@ -34,7 +34,17 @@ p {
 }
 
 h1,
-h2,
+h2{
+  color: rgb(206, 206, 206);
+  font-weight: bold;
+  
+}
+
+.title{
+  color: rgb(59, 59, 59);
+  font-weight: bold;
+}
+
 h3,
 h4,
 h5,
