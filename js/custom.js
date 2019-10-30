@@ -1,74 +1,111 @@
-(function ($) {
+/*global $:false, jQuery:false, console:false */
+jQuery(document).ready(function($) {
+  "use strict";
 
-	new WOW().init();
-	
-	$(window).load(function(){
-      $("#navigation").sticky({ topSpacing: 0 });
+  $('.accordion').on('show', function(e) {
+
+    $(e.target).prev('.accordion-heading').find('.accordion-toggle').addClass('active');
+    $(e.target).prev('.accordion-heading').find('.accordion-toggle i').removeClass('icon-plus');
+    $(e.target).prev('.accordion-heading').find('.accordion-toggle i').addClass('icon-minus');
+  });
+
+  $('.accordion').on('hide', function(e) {
+    $(this).find('.accordion-toggle').not($(e.target)).removeClass('active');
+    $(this).find('.accordion-toggle i').not($(e.target)).removeClass('icon-minus');
+    $(this).find('.accordion-toggle i').not($(e.target)).addClass('icon-plus');
+  });
+
+  // Create the dropdown base
+  $("<select />").appendTo("nav");
+
+  // Create default option "Go to..."
+  $("<option />", {
+    "selected": "selected",
+    "value": "",
+    "text": "Go to..."
+  }).appendTo("nav select");
+
+  // Populate dropdown with menu items
+  $("nav a").each(function() {
+    var el = $(this);
+    $("<option />", {
+      "value": el.attr("href"),
+      "text": el.text()
+    }).appendTo("nav select");
+  });
+  // To make dropdown actually work
+  // To make more unobtrusive: http://css-tricks.com/4064-unobtrusive-page-changer/
+  $("nav select").change(function() {
+    window.location = $(this).find("option:selected").val();
+  });
+
+  //$('.cover').css(top:'100%');
+  $('.thumb-wrapp').hover(function() {
+    $('.folio-image', this).stop().animate({
+      bottom: '20px'
+    }, {
+      queue: false,
+      duration: 300
     });
+    $('.folio-caption', this).stop().animate({
+      bottom: '-20px'
+    }, {
+      queue: false,
+      duration: 300
+    });
+  }, function() {
+    $('.folio-image', this).stop().animate({
+      bottom: '0'
+    }, {
+      queue: false,
+      duration: 300
+    });
+    $('.folio-caption', this).stop().animate({
+      bottom: '0'
+    }, {
+      queue: false,
+      duration: 300
+    });
+  });
+  $('ul.nav li.dropdown').hover(function() {
+    $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeIn();
+  }, function() {
+    $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
+  });
+  //.parallax(xPosition, speedFactor, outerHeight) options:
+  //xPosition - Horizontal position of the element
+  //inertia - speed to move relative to vertical scroll. Example: 0.1 is one tenth the speed of scrolling, 2 is twice the speed of scrolling
+  //outerHeight (true/false) - Whether or not jQuery should use it's outerHeight option to determine when a section is in the viewport
+  $('#featured').parallax("50%", 0.1);
+  $('#services').parallax("50%", 0.2);
+  $('#bottom').parallax("50%", 0.1);
 
-	jQuery(window).load(function() { 
-		jQuery("#preloader").delay(100).fadeOut("slow");
-		jQuery("#load").delay(100).fadeOut("slow");
-	});
+  $('.flexslider').flexslider({
+    animation: "fade"
+  });
+
+  $(".letter-container h2").lettering();
 
 
-	//jQuery for page scrolling feature - requires jQuery Easing plugin
-	$(function() {
-		$('.navbar-nav li a').bind('click', function(event) {
-			var $anchor = $(this);
-			$('html, body').stop().animate({
-				scrollTop: $($anchor.attr('href')).offset().top
-			}, 1500, 'easeInOutExpo');
-			event.preventDefault();
-		});
-		$('.page-scroll a').bind('click', function(event) {
-			var $anchor = $(this);
-			$('html, body').stop().animate({
-				scrollTop: $($anchor.attr('href')).offset().top
-			}, 1500, 'easeInOutExpo');
-			event.preventDefault();
-		});
-	});
-	
-	//owl carousel
-	$('#owl-works').owlCarousel({
-            items : 4,
-            itemsDesktop : [1199,5],
-            itemsDesktopSmall : [980,5],
-            itemsTablet: [768,5],
-            itemsTabletSmall: [550,2],
-            itemsMobile : [480,2],
-        });
-	
-	//nivo lightbox
-	$('.owl-carousel .item a').nivoLightbox({
-		effect: 'fadeScale',                             // The effect to use when showing the lightbox
-		theme: 'default',                           // The lightbox theme to use
-		keyboardNav: true,                          // Enable/Disable keyboard navigation (left/right/escape)
-		clickOverlayToClose: true,                  // If false clicking the "close" button will be the only way to close the lightbox
-		onInit: function(){},                       // Callback when lightbox has loaded
-		beforeShowLightbox: function(){},           // Callback before the lightbox is shown
-		afterShowLightbox: function(lightbox){},    // Callback after the lightbox is shown
-		beforeHideLightbox: function(){},           // Callback before the lightbox is hidden
-		afterHideLightbox: function(){},            // Callback after the lightbox is hidden
-		onPrev: function(element){},                // Callback when the lightbox gallery goes to previous item
-		onNext: function(element){},                // Callback when the lightbox gallery goes to next item
-		errorMessage: 'The requested content cannot be loaded. Please try again later.' // Error message when content can't be loaded
-	});
-	
-	
-	//parallax
-        if ($('.parallax').length)
-        {
-			$(window).stellar({
-				responsive:true,
-                scrollProperty: 'scroll',
-                parallaxElements: false,
-                horizontalScrolling: false,
-                horizontalOffset: 0,
-                verticalOffset: 0
-            });
+  $('.navigation').onePageNav({
+    begin: function() {
+      console.log('start');
+    },
+    end: function() {
+      console.log('stop');
+    },
+    scrollOffset: 0
+  });
 
-        }
+});
 
-})(jQuery);
+
+$(window).scroll(function() {
+  "use strict";
+  if ($(window).scrollTop() < 10) {
+
+    $('.fade').stop(true, true).fadeTo("slow", 1);
+  } else {
+    $('.fade').stop(true, true).fadeTo("slow", 0.33);
+  }
+});
